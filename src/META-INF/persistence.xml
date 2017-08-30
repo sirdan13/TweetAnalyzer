@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence version="2.1"
+	xmlns="http://xmlns.jcp.org/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence http://xmlns.jcp.org/xml/ns/persistence/persistence_2_1.xsd">
+	<persistence-unit name="TweetAnalyzer">
+		<class>tweet.analyzer.model.data.AnalysisInterval</class>
+		<class>tweet.analyzer.model.data.Event</class>
+		<class>tweet.analyzer.model.data.Hashtag</class>
+		<class>tweet.analyzer.model.data.Media</class>
+		<class>tweet.analyzer.model.data.Request</class>
+		<class>tweet.analyzer.model.data.Source</class>
+		<class>tweet.analyzer.model.data.SourcesRequest</class>
+		<class>tweet.analyzer.model.data.Statistic_Sentiment</class>
+		<class>tweet.analyzer.model.data.Statistic_TrendingSubject</class>
+		<class>tweet.analyzer.model.data.Statistic_TopMostWord</class>
+		<class>tweet.analyzer.model.data.Statistic_WordCloud</class>
+		<class>tweet.analyzer.model.data.Subject</class>
+		<class>tweet.analyzer.model.data.Subject_Word</class>
+		<class>tweet.analyzer.model.data.Tweet</class>
+
+	</persistence-unit>
+</persistence>
