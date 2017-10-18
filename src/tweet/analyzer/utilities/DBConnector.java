@@ -14,6 +14,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import tweet.analyzer.core.KnowledgeBase;
@@ -79,7 +80,7 @@ public class DBConnector {
 		ResultSet result = stat.executeQuery(query);
 
 		while (result.next()) {
-
+			
 			Tweet t = tweetFromResultSet(result);
 			outputlist.add(t);
 		}
@@ -233,15 +234,29 @@ public class DBConnector {
 
 		ResultSet result = stat.executeQuery(query);
 
+		HashMap<String, Tweet> tmap = new HashMap<String, Tweet>();
+		
 		while (result.next()) {
+			
 			Tweet t = tweetFromResultSet(result);
-			outputlist.add(t);
+			if(tmap.containsKey(t.getTweetID())){
+				if(Integer.parseInt(tmap.get(t.getTweetID()).getId())<Integer.parseInt(t.getId())){
+					tmap.replace(t.getTweetID(), t);
+				}
+			}
+			else
+				tmap.put(t.getTweetID(), t);
+		//	outputlist.add(t);
+			
 		}
+		
+		
 
 		result.close();
 		conn.close();
 
-		return outputlist;
+		//return outputlist;
+		return new ArrayList<Tweet> (tmap.values());
 	}
 
 	/**
@@ -382,27 +397,28 @@ public class DBConnector {
 	 */
 	public Tweet tweetFromResultSet(ResultSet result) throws SQLException, FileNotFoundException, IOException {
 
-		String id = result.getString(1);
-		String text = result.getString(7).replaceAll("(\\r|\\n)", ""); // fare
+		String id = result.getString("ID");
+		String text = result.getString("TEXT").replaceAll("(\\r|\\n)", ""); // fare
 																		// preprocessing
 																		// alla
 																		// creazione?
 		
-		String language = result.getString(4);
-		String longitude = result.getString(6);
-		String latitude = result.getString(5);
+		String language = result.getString("LANGUAGE");
+		String longitude = result.getString("LONGITUDE");
+		String latitude = result.getString("LATITUDE");
 //		Date createdAt = result.getDate(2);
 //		Date createdAt = result.getTimestamp(2);
-		Timestamp createdAt1 = result.getTimestamp(2);
+		Timestamp createdAt1 = result.getTimestamp("CREATION_DATE");
 		java.util.Date createdAt = timestampToDate(createdAt1);
-		Integer favorites = result.getInt(3);
-		String userId = result.getString(10);
-		String userLocation = result.getString(12);
-		Integer userListedCount = result.getInt(11);
-		Integer userFollowersCount = result.getInt(9);
-		String tweetID = result.getString(8);
+		Integer favorites = result.getInt("FAVORITES_COUNT");
+		int retweetCount = result.getInt("RETWEET_COUNT");
+		String userId = result.getString("USER_ID");
+		String userLocation = result.getString("USER_LOCATION");
+		Integer userListedCount = result.getInt("USER_LISTED_COUNT");
+		Integer userFollowersCount = result.getInt("USER_FOLLOWER_COUNT");
+		String tweetID = result.getString("TWEET_ID");
 
-		Tweet t = new Tweet(id, text, language, longitude, latitude, createdAt, favorites, userId, userLocation, userListedCount, userFollowersCount, tweetID);
+		Tweet t = new Tweet(id, text, language, longitude, latitude, createdAt, favorites, retweetCount, userId, userLocation, userListedCount, userFollowersCount, tweetID);
 		return t;
 
 	}

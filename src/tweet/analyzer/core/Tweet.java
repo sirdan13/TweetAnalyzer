@@ -28,6 +28,9 @@ public class Tweet {
 
 	private String textToEmoji;
 	private String id;
+	
+	private int retweetCount;
+	
 	/**
 	 * Original text of the tweet
 	 */
@@ -99,6 +102,34 @@ public class Tweet {
 		this.latitude = latitude;
 		this.createdAt = createdAt;
 		this.favorites = favorites;
+		this.userId = userId;
+		this.userLocation = userLocation;
+		this.userListedCount = userListedCount;
+		this.userFollowersCount = userFollowersCount;
+		this.tweetID = tweetID;
+		
+		this.relevantWords = new ArrayList<WeightedWord>();
+		this.positiveWords = new ArrayList<String>();
+		this.insultingWords = new ArrayList<String>();
+		this.links = new ArrayList<String>();
+		this.likeWords = new ArrayList<String>();
+		this.hilariousWords = new ArrayList<String>();
+		this.sadWords = new ArrayList<String>();
+		this.angryWords = new ArrayList<String>();
+
+	}
+	
+	public Tweet(String id, String text, String language, String longitude, String latitude, Date createdAt,
+			int favorites, int retweetCount, String userId, String userLocation, int userListedCount, int userFollowersCount, String tweetID) throws FileNotFoundException, IOException {
+		this.id = id;
+		this.originaltext = text;
+		this.preprocessText();
+		this.language = language;
+		this.longitude = longitude;
+		this.latitude = latitude;
+		this.createdAt = createdAt;
+		this.favorites = favorites;
+		this.retweetCount=retweetCount;
 		this.userId = userId;
 		this.userLocation = userLocation;
 		this.userListedCount = userListedCount;
@@ -1716,6 +1747,15 @@ public void setSentiment(String language) throws FileNotFoundException, IOExcept
 	
 
 	
+
+
+	public int getRetweetCount() {
+		return retweetCount;
+	}
+
+	public void setRetweetCount(int retweetCount) {
+		this.retweetCount = retweetCount;
+	}
 
 
 	private static Set<String> loveprelim, hilariousprelim, sadprelim, angryprelim, stopsentiment;
