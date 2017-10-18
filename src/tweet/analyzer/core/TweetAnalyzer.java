@@ -311,7 +311,8 @@ public class TweetAnalyzer {
 						
 						//ASSEGNO UN PUNTEGGIO AD OGNI TWEET ESTRATTO: LO SCORE DIPENDE DAL NUMERO DI KEYWORDS CONTENUTE NEL TWEET
 						System.out.println("Assegnazione scores ai tweet: attendere");
-						tweetScore(tlist1, keywords);
+					//	tweetScore(tlist1, keywords);
+						tweetScore(tlist1);
 						System.out.println("Scores assegnati con successo ai tweet.");
 						
 						
@@ -1124,7 +1125,7 @@ private static List<Tweet> sampleOtherLanguage(List<Tweet> tlist, String languag
 			}
 		
 	}
-
+//TODO DEPRECATED
 	private static void tweetScore(List<Tweet> tlist1, List<String> keywords) {
 
 		String[] arrayk = new String[keywords.size()];
@@ -1150,6 +1151,18 @@ private static List<Tweet> sampleOtherLanguage(List<Tweet> tlist, String languag
 			}
 		}
 
+	}
+	
+	private static void tweetScore(List<Tweet> tlist){
+		for(int i = 0;i<tlist.size();i++){
+			Tweet t = tlist.get(i);
+			double score = (t.getRetweetCount()*1.2)+(t.getFavorites());
+			if(score==0)
+				score=1;
+			tlist.get(i).setScore(score);
+		}
+			
+			
 	}
 
 	/**

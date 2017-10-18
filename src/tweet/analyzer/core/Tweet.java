@@ -72,7 +72,7 @@ public class Tweet {
 	
 	private String subject ="";
 	
-	private int score=1;
+	private double score=1;
 	
 	private boolean ambiguo=false;
 	
@@ -354,12 +354,12 @@ public class Tweet {
 		return this.subject;
 	}
 	
-	public void setScore(int score) {
+	public void setScore(double score2) {
 		
-		this.score=score;
+		this.score=score2;
 	}
 	
-	public int getScore() {
+	public double getScore() {
 		
 		return this.score;
 	}
