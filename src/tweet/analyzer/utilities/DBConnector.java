@@ -219,7 +219,7 @@ public class DBConnector {
 	 */
 	public List<Tweet> extractIntervalTweets(String dbtable, String requestID, String from, String to) throws ClassNotFoundException, SQLException, FileNotFoundException, IOException {
 
-		ArrayList<Tweet> outputlist = new ArrayList<Tweet>();
+	//	ArrayList<Tweet> outputlist = new ArrayList<Tweet>();
 
 		Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
 		Connection conn = DriverManager.getConnection(connectionurl);
