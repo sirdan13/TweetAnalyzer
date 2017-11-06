@@ -6,6 +6,10 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.DateFormat;
 import java.text.DecimalFormat;
@@ -24,6 +28,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Properties;
+import java.util.Scanner;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
@@ -81,13 +86,21 @@ public class TweetAnalyzer {
 
 	private static List<Integer> listaIdIntervalli = new ArrayList<>();
 
+	private static PreparedStatement psEstraiEventi;
+	
+	private static PreparedStatement psIntervalList;
+	
+	private static Connection c;
+	
 	/**
 	 * Main function: for testing purpose and to show examples of methods usage
 	 * 
 	 * @param args
 	 *            main arguments
+	 * @throws SQLException 
+	 * @throws FileNotFoundException 
 	 */
-	public static void main(String[] args) throws DatabaseException {
+	public static void main(String[] args) throws DatabaseException, SQLException, FileNotFoundException {
 		
 		long tempoinizialetotale = System.currentTimeMillis();
 		
@@ -121,11 +134,34 @@ public class TweetAnalyzer {
 			System.exit(-1);
 		}
 		*/
-		String intervalli = JOptionPane.showInputDialog("Inserisci gli intervalli di analisi:");
-		String [] anaint = intervalli.split(",");
-		for(int i = 0;i<anaint.length;i++){
-			listaIdIntervalli.add(Integer.parseInt(anaint[i]));
+		String [] anaint = null;
+		String [] options = {"Singolo intervallo", "Intero evento"};
+		String choice = (String) JOptionPane.showInputDialog(null, "Analizzare i dati per singolo intervallo o intero evento?",
+		        "TvPad", JOptionPane.QUESTION_MESSAGE, null, options, options[1]);
+		if(choice.equals("Intero evento")){
+			c = openConnection();
+			int idEvent = selectEvent();
+			psIntervalList = c.prepareStatement("SELECT a.ID FROM Event e JOIN AnalysisInterval a ON (e.ID=a.IDEvent) WHERE e.ID=?");
+			psIntervalList.setInt(1, idEvent);
+			ResultSet rs = psIntervalList.executeQuery();
+			String intervalList = "";
+			while(rs.next())
+				intervalList+=rs.getInt(1)+",";
+			intervalList=intervalList.substring(0, intervalList.length()-1);
+			
+			anaint = intervalList.split(",");
+			
 		}
+		if(choice.equals("Singolo intervallo")){
+				String intervalli = JOptionPane.showInputDialog("Inserisci gli intervalli di analisi:");
+				anaint = intervalli.split(",");
+		}
+		
+		for(int i = 0;i<anaint.length;i++)
+			listaIdIntervalli.add(Integer.parseInt(anaint[i]));
+		
+		
+		
 		
 		NumberFormat nf = NumberFormat.getNumberInstance(Locale.US);
 		DecimalFormat df = (DecimalFormat) nf;
@@ -311,7 +347,8 @@ public class TweetAnalyzer {
 						
 						//ASSEGNO UN PUNTEGGIO AD OGNI TWEET ESTRATTO: LO SCORE DIPENDE DAL NUMERO DI KEYWORDS CONTENUTE NEL TWEET
 						System.out.println("Assegnazione scores ai tweet: attendere");
-						tweetScore(tlist1, keywords);
+					//	tweetScore(tlist1, keywords);
+						tweetScore(tlist1);
 						System.out.println("Scores assegnati con successo ai tweet.");
 						
 						
@@ -966,6 +1003,45 @@ public class TweetAnalyzer {
 	}
 	
 	
+	private static Connection openConnection() throws FileNotFoundException, SQLException{
+		Connection c;
+		Scanner sc = new Scanner(new File("config/database.txt"));
+		String host = "", type = "", port = "", name = "", user = "", password = "";
+		host = sc.nextLine().split("=")[1];
+		type = sc.nextLine().split("=")[1];
+		port = sc.nextLine().split("=")[1];
+		name = sc.nextLine().split("=")[1];
+		user = sc.nextLine().split("=")[1];
+		password = sc.nextLine().split("=")[1];
+		sc.close();
+		c = DriverManager.getConnection("jdbc:"+type+"://"+host+":"+port+";databaseName="+name+";user="+user+";password="+password+";");
+		return c;
+	}
+	
+	private static String[] arrayEvents() throws SQLException{
+		psEstraiEventi=c.prepareStatement("SELECT * FROM Event ORDER BY ID DESC");
+		ResultSet rs = psEstraiEventi.executeQuery();
+		List<String> events = new ArrayList<String>();
+		while(rs.next())
+			events.add(rs.getInt("ID")+" - "+rs.getString("Name"));
+		String [] output = events.toArray(new String[events.size()]);
+		return output;
+	}
+
+
+	private static int selectEvent() throws SQLException{
+		
+		String[] choices = arrayEvents();
+	    String eventChosen = (String) JOptionPane.showInputDialog(null, "Select EVENT",
+	        "TvPad", JOptionPane.QUESTION_MESSAGE, null, 
+	        choices,
+	        choices[0]);
+	    
+	    return Integer.parseInt(eventChosen.split("-")[0].split(" ")[0]);
+	    
+		
+	}
+	
 	/**
 	 * Allows to have a tweet list made mostly by the selected language. The number of "foreign" tweets
 	 * to be skipped is customizable, as is the preferred language.
@@ -1124,7 +1200,7 @@ private static List<Tweet> sampleOtherLanguage(List<Tweet> tlist, String languag
 			}
 		
 	}
-
+//TODO DEPRECATED
 	private static void tweetScore(List<Tweet> tlist1, List<String> keywords) {
 
 		String[] arrayk = new String[keywords.size()];
@@ -1150,6 +1226,18 @@ private static List<Tweet> sampleOtherLanguage(List<Tweet> tlist, String languag
 			}
 		}
 
+	}
+	
+	private static void tweetScore(List<Tweet> tlist){
+		for(int i = 0;i<tlist.size();i++){
+			Tweet t = tlist.get(i);
+			double score = (t.getRetweetCount()*1.2)+(t.getFavorites());
+			if(score==0)
+				score=1;
+			tlist.get(i).setScore(score);
+		}
+			
+			
 	}
 
 	/**

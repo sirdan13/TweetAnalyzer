@@ -1,0 +1,6 @@
+database_host=localhost
+database_type=sqlserver
+database_port=1433
+database_name=TvPad4-dev
+datbase_user_name=tvpad
+database_user_password=tvpad
