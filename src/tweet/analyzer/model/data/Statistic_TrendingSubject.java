@@ -53,6 +53,17 @@ public class Statistic_TrendingSubject implements Serializable {
 
 	@Column(name = "TweetIdList")
 	private String tweetidlist;
+	
+	@Column(name = "Image")
+	private String imageURL;
+
+	public String getImageURL() {
+		return imageURL;
+	}
+
+	public void setImageURL(String imageURL) {
+		this.imageURL = imageURL;
+	}
 
 	// bi-directional many-to-one association to AnalysisInterval
 	@ManyToOne

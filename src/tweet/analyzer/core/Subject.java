@@ -27,6 +27,8 @@ public class Subject {
 	 */
 	private ArrayList<String> surfaceForms;
 	
+	private String imageURL;
+	
 
 	private String tag;
 	
@@ -95,18 +97,20 @@ public int posFinale;
 		this.surfaceForms = surfaceForms;
 	}
 	
-	public Subject(Integer idSub, String canonicalForm, ArrayList<String> surfaceForms, String tag) {
+	public Subject(Integer idSub, String canonicalForm, ArrayList<String> surfaceForms, String tag, String imageURL) {
 		this.setIdSubDB(idSub);
 		this.canonicalForm = canonicalForm;
 		this.surfaceForms = surfaceForms;
 		this.tag=tag;
+		this.imageURL=imageURL;
 	}
 	
-	public Subject(Integer idSub, String canonicalForm, ArrayList<String> surfaceForms, String tag, String stopwords) {
+	public Subject(Integer idSub, String canonicalForm, ArrayList<String> surfaceForms, String tag, String imageURL, String stopwords) {
 		this.setIdSubDB(idSub);
 		this.canonicalForm = canonicalForm;
 		this.surfaceForms = surfaceForms;
 		this.tag=tag;
+		this.imageURL=imageURL;
 		this.setStopwords(stopwords);
 	}
 
@@ -266,6 +270,14 @@ public int posFinale;
 
 	public void setStopwords(String stopwords) {
 		this.stopwords = stopwords;
+	}
+
+	public String getImageURL() {
+		return imageURL;
+	}
+
+	public void setImageURL(String imageURL) {
+		this.imageURL = imageURL;
 	}
 
 	

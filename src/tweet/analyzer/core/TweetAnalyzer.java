@@ -91,6 +91,7 @@ public class TweetAnalyzer {
 	private static PreparedStatement psIntervalList;
 	
 	private static Connection c;
+	private static boolean checkTopmostLanguageSampling;
 	
 	/**
 	 * Main function: for testing purpose and to show examples of methods usage
@@ -160,8 +161,14 @@ public class TweetAnalyzer {
 		for(int i = 0;i<anaint.length;i++)
 			listaIdIntervalli.add(Integer.parseInt(anaint[i]));
 		
+		String [] yesNo = {"yes", "no"};
 		
-		
+		String topmostLanguageSampling = (String) JOptionPane.showInputDialog(null, "Calcolare le topmost su tutti i tweet (NO) o su un campione prevalentemente in italiano (YES)?",
+		        "TvPad", JOptionPane.QUESTION_MESSAGE, null, yesNo, yesNo[0]);
+		if(topmostLanguageSampling.equals("yes"))
+			checkTopmostLanguageSampling=true;
+		else
+			checkTopmostLanguageSampling=false;
 		
 		NumberFormat nf = NumberFormat.getNumberInstance(Locale.US);
 		DecimalFormat df = (DecimalFormat) nf;
@@ -521,9 +528,9 @@ public class TweetAnalyzer {
 							Subject subApp;
 					//		if(sub.getStopwords().length()<=0)
 							if(sub.getStopwords()==null)
-								subApp = new Subject(sub.getId(), sub.getName(), listWordAssociated, sub.getTag());
+								subApp = new Subject(sub.getId(), sub.getName(), listWordAssociated, sub.getTag(), sub.getImageURL());
 							else
-								subApp = new Subject(sub.getId(), sub.getName(), listWordAssociated, sub.getTag(), sub.getStopwords());
+								subApp = new Subject(sub.getId(), sub.getName(), listWordAssociated, sub.getTag(), sub.getImageURL(), sub.getStopwords());
 					//		System.out.println("TAAAAAAG :" +sub.getTag());
 							listsub.add(subApp);
 							if (!subjectsApp.contains(subApp)) {
@@ -557,8 +564,17 @@ public class TweetAnalyzer {
 								List<Tweet> tlist4 = new ArrayList<Tweet>();
 							//	tlist4=languageFilter(subApp.getSubjectTweetList());
 								//	SortedSet<WeightedWord> topmostForSubject = topmostWordsFromATweetSet(subApp.subjectTweetList, kb, 10);
-								tlist4=sampleOtherLanguage(subApp.getSubjectTweetList(), "it", 1000);
-								SortedSet<WeightedWord> topmostForSubject = topmostWordsFromATweetSet(tlist4, kb, 10);
+								SortedSet<WeightedWord> topmostForSubject;
+								if(checkTopmostLanguageSampling){
+									tlist4=sampleOtherLanguage(subApp.getSubjectTweetList(), "it", 1000);
+									topmostForSubject = topmostWordsFromATweetSet(tlist4, kb, 10);
+								}
+									
+								else
+									topmostForSubject = topmostWordsFromATweetSet(subApp.getSubjectTweetList(), kb, 10);
+								
+								//	tlist4=sampleOtherLanguage(subApp.getSubjectTweetList(), "it", 1000);
+								//SortedSet<WeightedWord> topmostForSubject = topmostWordsFromATweetSet(tlist4, kb, 10);
 								Iterator<WeightedWord> wwit2 = topmostForSubject.iterator();
 
 								System.out.println();
@@ -749,13 +765,12 @@ public class TweetAnalyzer {
 							Statistic_TrendingSubject sw = new Statistic_TrendingSubject();
 							sw.setAnalysisInterval(analysisInterval);
 							sw.setIdSubject(sub4.getIdSubDB());
-
+							sw.setImageURL(sub4.getImageURL());
 		
 							sw.setMedal(sub4.getMedal());
 					//		System.out.println(listsub1.get(i).getCanonicalForm()+":\t"+sub4.getMedal());
 							
 							//
-							
 							
 							sw.setSubjectName(subject_names.get(i));
 

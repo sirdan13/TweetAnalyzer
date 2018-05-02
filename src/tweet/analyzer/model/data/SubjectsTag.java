@@ -6,6 +6,7 @@ public class SubjectsTag {
 	private String name;
 	private String tag;
 	private String stopwords;
+	private String imageURL;
 
 	public SubjectsTag(int id, String name, String tag) {
 		this.setId(id);
@@ -13,11 +14,12 @@ public class SubjectsTag {
 		this.setTag(tag);
 	}
 	
-	public SubjectsTag(int id, String name, String tag, String stopwords) {
+	public SubjectsTag(int id, String name, String tag, String stopwords, String imageURL) {
 		this.setId(id);
 		this.setName(name);
 		this.setTag(tag);
 		this.setStopwords(stopwords);
+		this.setImageURL(imageURL);
 	}
 
 	public int getId() {
@@ -53,6 +55,14 @@ public class SubjectsTag {
 
 	public void setStopwords(String stopwords) {
 		this.stopwords = stopwords;
+	}
+
+	public String getImageURL() {
+		return imageURL;
+	}
+
+	public void setImageURL(String imageURL) {
+		this.imageURL = imageURL;
 	}
 
 }

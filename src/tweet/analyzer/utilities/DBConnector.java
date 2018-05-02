@@ -113,8 +113,9 @@ public class DBConnector {
 					String tag = result.getString("Tag");
 					int id = result.getInt("ID");
 					String stopwords = result.getString("Stopwords");
+					String imageURL = result.getString("Image");
 					
-					tweet.analyzer.model.data.SubjectsTag s = new tweet.analyzer.model.data.SubjectsTag(id, name, tag, stopwords);
+					tweet.analyzer.model.data.SubjectsTag s = new tweet.analyzer.model.data.SubjectsTag(id, name, tag, stopwords, imageURL);
 					sublist.add(s);
 				}
 			}

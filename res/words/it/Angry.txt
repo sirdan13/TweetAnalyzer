@@ -1,4 +1,3 @@
-addio
 adesso basta
 affanculo
 ammazza
@@ -140,13 +139,6 @@ ladre
 ladri
 ladro
 mah
-maah
-maaah
-maaaah
-maaaaah
-maaaaaah
-maaaaaaah
-maaaaaaaah
 maleducata
 maleducate
 maleducati
@@ -226,7 +218,6 @@ stronze
 stronzi
 stronzo
 stupida
-stupidaggini
 stupidata
 stupide
 stupidi
